@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordHelper } from 'src/common/helpers/password.helper';
+import { TokenHelper } from 'src/common/helpers/token.helper';
 import { NotificationInstance } from 'src/entities/notification-instance/notification-instance.entity';
 import { Notification } from 'src/entities/notification/notification.entity';
 import { UserController } from './user.controller';
@@ -16,6 +17,6 @@ import { UserService } from './user.service';
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService, PasswordHelper],
+  providers: [UserService, PasswordHelper, TokenHelper],
 })
 export class UserModule {}

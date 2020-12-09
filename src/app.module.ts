@@ -6,13 +6,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './entities/user/user.entity';
 import { UserModule } from './modules/user/user.module';
+import { Notification } from './entities/notification/notification.entity';
+import { NotificationInstance } from './entities/notification-instance/notification-instance.entity';
+import { File } from './entities/file/file.entity';
 
 const env = process.env.NODE_ENV || 'development';
 
 const envFilePath =
   env === 'development' ? '.env' : `.env${process.env.NODE_ENV}`;
 
-const entities = [User, File, Notification];
+const entities = [User, Notification, NotificationInstance, File];
 @Module({
   imports: [
     ConfigModule.forRoot({
