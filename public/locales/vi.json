@@ -1,0 +1,10 @@
+{
+  "VALIDATE": {
+    "EMAIL": "Vui lòng nhập một địa chỉ email hợp lệ (ví dụ: johndoe@domain.com).",
+    "REQUIRED": "Đây là thông tin bắt buộc.",
+    "LOGIN": "Tài khoản đăng nhập không đúng",
+    "CONFIRM_PASSWORD": "Vui lòng nhập lại mật khẩu lần nữa",
+    "PHONE": "Số điện thoại không hợp lệ",
+    "NUMBER": "Vui lòng nhập số"
+  }
+}
