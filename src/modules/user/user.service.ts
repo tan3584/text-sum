@@ -14,6 +14,11 @@ import { TokenHelper } from 'src/common/helpers/token.helper';
 import { LoginUserDto } from 'src/dto/user/LoginUser.dto';
 import { TOKEN_ROLE } from 'src/common/constants/token-role.enum';
 import { TOKEN_TYPE } from 'src/common/constants/token-types.enum';
+import { SetPassword } from 'src/dto/user/SetPassword.dto';
+import { ResetPassword } from 'src/dto/user/ResetPassword.dto';
+import { ChangePassword } from 'src/dto/user/ChangePassword.dto';
+import { getNickname } from 'src/common/helpers/utility.helper';
+import { MailHelper } from 'src/common/helpers/mail.helper';
 
 @Injectable()
 export class UserService {
@@ -21,6 +26,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly passwordHelper: PasswordHelper,
     private readonly tokenHelper: TokenHelper,
+    private readonly mailHelper: MailHelper,
   ) {}
   async getUser(id: number): Promise<BaseUserDetailResponse> {
     const user = await this.userRepository.findOne(id);
@@ -67,6 +73,24 @@ export class UserService {
       user.preferLanguage = lang;
 
       const result = await this.userRepository.save(user);
+      const tokenData = {
+        id: result.id,
+        role: TOKEN_ROLE.USER,
+        type: TOKEN_TYPE.VERIFY,
+      };
+      const verifyToken = this.tokenHelper.createToken(tokenData);
+      // await this.mailHelper.sendWelcomeMail(
+      //   result.email,
+      //   TOKEN_ROLE.USER,
+      //   getNickname(result),
+      //   result.preferLanguage,
+      // );
+      this.mailHelper.sendVerifyEmail(
+        result.email,
+        verifyToken,
+        getNickname(result),
+        result.preferLanguage,
+      );
       return result;
     } catch (error) {
       customThrowError(
@@ -79,6 +103,7 @@ export class UserService {
   }
 
   async login(model: LoginUserDto): Promise<BaseUserDetailResponse> {
+    console.log('user');
     const user = await this.userRepository.getLoginUserWithOptions({
       email: model.email,
     });
@@ -132,5 +157,158 @@ export class UserService {
       );
     }
     return true;
+  }
+
+  async changePassword(id: number, model: ChangePassword): Promise<boolean> {
+    const now = Math.floor(Date.now() / 1000) * 1000;
+    const user = await this.userRepository.findOne(
+      { id },
+      {
+        select: ['id', 'password', 'passwordChangedAt', 'email', 'firstName'],
+      },
+    );
+    if (!user) {
+      customThrowError(
+        RESPONSE_MESSAGES.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        RESPONSE_MESSAGES_CODE.NOT_FOUND,
+      );
+    }
+
+    const newHash = await this.passwordHelper.createHash(model.password);
+
+    user.password = newHash;
+    user.passwordChangedAt = new Date(now);
+
+    await this.userRepository.save(user);
+
+    // this.mailHelper.sendPasswordChangedEmail(user.email, user.firstName);
+
+    return true;
+  }
+
+  async forgotPassword(email: string, lang: USER_LANGUAGE): Promise<boolean> {
+    const user = await this.userRepository.findOne(
+      { email: email.toLowerCase() },
+      {
+        select: ['id', 'email', 'firstName'],
+      },
+    );
+    if (!user) {
+      customThrowError(
+        RESPONSE_MESSAGES.EMAIL_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        RESPONSE_MESSAGES_CODE.EMAIL_NOT_FOUND,
+      );
+    }
+    const token = this.tokenHelper.createToken({
+      id: user.id,
+      email: user.email.toLowerCase(),
+      type: TOKEN_TYPE.FORGOT_PASSWORD,
+    });
+    this.mailHelper.sendForgotPassword(
+      token,
+      user.email.toLowerCase(),
+      getNickname(user),
+      lang,
+    );
+
+    return true;
+  }
+
+  async resetPassword(model: ResetPassword): Promise<boolean> {
+    const now = Math.floor(Date.now() / 1000) * 1000;
+    const data = this.tokenHelper.verifyToken(
+      model.token,
+      TOKEN_TYPE.FORGOT_PASSWORD,
+    );
+    const user = await this.userRepository.findOne(
+      {
+        email: data.email,
+        id: data.id,
+      },
+      { select: ['id'] },
+    );
+
+    if (!user) {
+      customThrowError(
+        RESPONSE_MESSAGES.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        RESPONSE_MESSAGES_CODE.NOT_FOUND,
+      );
+    }
+
+    user.password = await this.passwordHelper.createHash(model.password);
+    user.passwordChangedAt = new Date(now);
+
+    await this.userRepository.save(user);
+    return true;
+  }
+
+  async setPassword(model: SetPassword): Promise<boolean> {
+    const now = Math.floor(Date.now() / 1000) * 1000;
+    const data = this.tokenHelper.verifyToken(
+      model.token,
+      TOKEN_TYPE.SET_PASSWORD,
+    );
+    const user = await this.userRepository.findOne(
+      {
+        email: data.email,
+        id: data.id,
+      },
+      { select: ['id'] },
+    );
+
+    if (!user) {
+      customThrowError(
+        RESPONSE_MESSAGES.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        RESPONSE_MESSAGES_CODE.NOT_FOUND,
+      );
+    }
+
+    user.password = await this.passwordHelper.createHash(model.password);
+    user.passwordChangedAt = new Date(now);
+    user.emailVerified = true;
+
+    await this.userRepository.save(user);
+
+    return true;
+  }
+
+  async verifyToken(token: string): Promise<BaseUserDetailResponse> {
+    const data = this.tokenHelper.verifyToken(token);
+
+    const user = await this.userRepository.findOne({
+      email: data.email,
+    });
+
+    if (!user) {
+      customThrowError(
+        RESPONSE_MESSAGES.ERROR,
+        HttpStatus.UNAUTHORIZED,
+        RESPONSE_MESSAGES_CODE.ERROR,
+      );
+    }
+    const result = new BaseUserDetailResponse({
+      ...user,
+      token,
+    });
+
+    return result;
+  }
+
+  async verifyResetToken(token: string): Promise<BaseUserDetailResponse> {
+    const data = this.tokenHelper.verifyToken(
+      token,
+      TOKEN_TYPE.FORGOT_PASSWORD,
+    );
+
+    const result = new BaseUserDetailResponse({
+      ...data,
+      token,
+    });
+
+    return result;
   }
 }

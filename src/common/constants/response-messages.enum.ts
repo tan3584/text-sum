@@ -8,6 +8,7 @@ export enum RESPONSE_MESSAGES {
   NOT_FOUND = 'Not found',
   EMAIL_NOT_FOUND = 'Email not found',
   DELETED_ACCOUNT = 'Account has been deleted, contact admin for support!',
+  TOKEN_ERROR = 'Token error',
 }
 
 export enum RESPONSE_MESSAGES_CODE {
@@ -21,6 +22,7 @@ export enum RESPONSE_MESSAGES_CODE {
   SELF_DELETE = 'SELF_DELETE',
   SUPER_ADMIN_DELETE = 'SUPER_ADMIN_DELETE',
   DELETED_ACCOUNT = 'DELETED_ACCOUNT',
+  EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND',
 }
 
 export const RESPONSE_EXPLAINATION = {

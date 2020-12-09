@@ -18,7 +18,6 @@ export class UserRepository extends Repository<User> {
         'user.password',
         'user.firstName',
         'user.lastName',
-        'user.verifiedStatus',
         'user.status',
         'user.preferLanguage',
       ])

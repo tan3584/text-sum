@@ -1,0 +1,10 @@
+{
+  "VALIDATE": {
+    "EMAIL": "Please enter a valid email address (Ex: johndoe@domain.com)",
+    "REQUIRED": "This is a required field",
+    "LOGIN": "The account sign-in was incorrect",
+    "CONFIRM_PASSWORD": "Please enter the same value again",
+    "PHONE": "Phone number is not valid",
+    "NUMBER": "Please enter numbers"
+  }
+}
