@@ -1,6 +1,8 @@
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Text-sum-web](https://github.com/tan3584/text-sum-web) repository for frontend.
+
 
 ## Installation
 
