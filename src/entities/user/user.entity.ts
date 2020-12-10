@@ -1,5 +1,6 @@
-import { Entity, DeleteDateColumn, OneToMany } from 'typeorm';
-import { Post } from '../post/post.enum';
+import { Entity, DeleteDateColumn, OneToMany, ManyToMany } from 'typeorm';
+import { Comment } from '../comment/comment.entity';
+import { Topic } from '../topic/topic.enum';
 import { UserCommonEntity } from '../userCommon.entity';
 
 @Entity()
@@ -8,8 +9,20 @@ export class User extends UserCommonEntity {
   deletedAt?: Date;
 
   @OneToMany(
-    () => Post,
-    post => post.user,
+    () => Topic,
+    topic => topic.user,
   )
-  posts: Post;
+  topics: Topic[];
+
+  @OneToMany(
+    () => Comment,
+    comment => comment.user,
+  )
+  comments: Comment[];
+
+  @ManyToMany(
+    () => Topic,
+    topic => topic.usersLiked,
+  )
+  topicsLiked: Topic[];
 }
