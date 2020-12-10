@@ -20,6 +20,8 @@ import { LogModule } from './common/modules/custom-logs/log.module';
 import { NotificationModule } from './common/notification/notification.module';
 import { Log } from './entities/log/log.entity';
 import { AuditLog } from './entities/audit-log/audit-log.entity';
+import { Topic } from './entities/topic/topic.enum';
+import { Comment } from './entities/comment/comment.entity';
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -35,6 +37,8 @@ const entities = [
   Notification,
   NotificationInstance,
   AuditLog,
+  Topic,
+  Comment,
 ];
 @Module({
   imports: [
