@@ -10,6 +10,7 @@ import {
   SetMetadata,
   ParseIntPipe,
   Query,
+  Put,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
@@ -92,5 +93,18 @@ export class UserController {
   ): Promise<BaseUserDetailResponse> {
     const result = await this.userService.verifyResetToken(model.token);
     return result;
+  }
+
+  @Put('lang/:language')
+  async changePreferLang(
+    @Param('language') language: USER_LANGUAGE,
+    @Req() request: Request,
+    @Body() model: CheckToken,
+  ): Promise<any> {
+    return await this.userService.changeLanguage(
+      language,
+      model.token,
+      (request as any).user,
+    );
   }
 }

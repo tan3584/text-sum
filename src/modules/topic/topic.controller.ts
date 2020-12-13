@@ -21,6 +21,7 @@ import { Topic } from 'src/entities/topic/topic.enum';
 import { TopicService } from './topic.service';
 import { Comment } from 'src/entities/comment/comment.entity';
 import { CreateComment } from 'src/dto/comment/createComment.dto';
+import { Request } from 'express';
 
 @ApiTags('Topic')
 @Controller('topic')

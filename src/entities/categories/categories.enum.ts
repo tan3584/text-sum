@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToMany } from 'typeorm';
+import { Topic } from '../topic/topic.enum';
 
 @Entity()
 export class Categories extends BaseEntity {
@@ -7,4 +8,10 @@ export class Categories extends BaseEntity {
 
   @Column({ nullable: true })
   description: string;
+
+  @ManyToMany(
+    () => Topic,
+    topic => topic.categories,
+  )
+  topics: Topic[];
 }

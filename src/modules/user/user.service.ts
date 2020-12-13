@@ -19,6 +19,7 @@ import { ResetPassword } from 'src/dto/user/ResetPassword.dto';
 import { ChangePassword } from 'src/dto/user/ChangePassword.dto';
 import { getNickname } from 'src/common/helpers/utility.helper';
 import { MailHelper } from 'src/common/helpers/mail.helper';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -310,5 +311,27 @@ export class UserService {
     });
 
     return result;
+  }
+
+  async changeLanguage(
+    language: USER_LANGUAGE,
+    token: string,
+    tokenData: Record<string, any>,
+  ): Promise<boolean> {
+    const { id } = tokenData;
+    let repository: Repository<User>;
+    const user = await repository.findOne(id, {
+      select: ['id', 'preferLanguage'],
+    });
+    if (!user) {
+      customThrowError(
+        RESPONSE_MESSAGES.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        RESPONSE_MESSAGES_CODE.NOT_FOUND,
+      );
+    }
+    user.preferLanguage = language;
+    await repository.save(user);
+    return true;
   }
 }

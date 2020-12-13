@@ -13,6 +13,7 @@ import { AuditLogService } from './common/modules/audit-logs/audit-log.service';
 import { LogModule } from './common/modules/custom-logs/log.module';
 import { LogService } from './common/modules/custom-logs/log.service';
 import { AllExceptionsFilter } from './common/filters/exception.filter';
+import { TopicModule } from './modules/topic/topic.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,7 +41,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options, {
-    include: [UserModule],
+    include: [UserModule, TopicModule],
   });
   SwaggerModule.setup('api/swagger', app, document);
 

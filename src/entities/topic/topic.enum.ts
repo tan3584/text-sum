@@ -2,6 +2,7 @@ import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { User } from '../user/user.entity';
 import { Comment } from '../comment/comment.entity';
+import { Categories } from '../categories/categories.enum';
 
 @Entity()
 export class Topic extends BaseEntity {
@@ -37,4 +38,10 @@ export class Topic extends BaseEntity {
     user => user.topicsLiked,
   )
   usersLiked: User[];
+
+  @ManyToMany(
+    () => Categories,
+    categories => categories.topics,
+  )
+  categories: Categories[];
 }
