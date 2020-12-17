@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { ConfigService } from '@nestjs/config/dist/config.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +22,9 @@ import { Log } from './entities/log/log.entity';
 import { AuditLog } from './entities/audit-log/audit-log.entity';
 import { Topic } from './entities/topic/topic.enum';
 import { Comment } from './entities/comment/comment.entity';
+import { Categories } from './entities/categories/categories.enum';
+import { TopicModule } from './modules/topic/topic.module';
+import { AuthenticateMiddleware } from './common/middlewares/authentication.middleware';
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -39,6 +42,7 @@ const entities = [
   AuditLog,
   Topic,
   Comment,
+  Categories,
 ];
 @Module({
   imports: [
@@ -68,6 +72,7 @@ const entities = [
     TokenHelper,
     AuditLogModule,
     NotificationModule,
+    TopicModule,
   ],
   controllers: [AppController],
   providers: [
@@ -78,8 +83,8 @@ const entities = [
     TokenHelper,
   ],
 })
-export class AppModule {
-  /*
-    apply middleware latter
-  */
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AuthenticateMiddleware).forRoutes('*');
+  }
 }

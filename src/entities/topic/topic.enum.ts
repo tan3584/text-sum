@@ -44,4 +44,7 @@ export class Topic extends BaseEntity {
     categories => categories.topics,
   )
   categories: Categories[];
+
+  @Column({ default: true })
+  sendNoti: boolean;
 }

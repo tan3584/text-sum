@@ -9,6 +9,7 @@ import {
   Post,
   SetMetadata,
   ParseIntPipe,
+  UseGuards,
   Query,
   Put,
 } from '@nestjs/common';
@@ -24,10 +25,11 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { ChangePassword } from 'src/dto/user/ChangePassword.dto';
 import { ResetPassword } from 'src/dto/user/ResetPassword.dto';
 import { CheckToken } from 'src/dto/user/CheckToken.dto';
+import { UserAuthenticationGuard } from 'src/common/guards/userAuthentication.guard';
 
 @ApiTags('User - User')
 @Controller('user')
-// @UseGuards()
+@UseGuards(UserAuthenticationGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -41,15 +43,6 @@ export class UserController {
   @SetMetadata(METADATA.IS_PUBLIC, true)
   login(@Body() model: LoginUserDto): Promise<BaseUserDetailResponse> {
     return this.userService.login(model);
-  }
-
-  @Post(':lang')
-  @SetMetadata(METADATA.IS_PUBLIC, true)
-  createAccount(
-    @Body() createUserModel: CreateUserDto,
-    @Param('lang') lang: USER_LANGUAGE,
-  ): Promise<boolean> {
-    return this.userService.registerAccount(createUserModel, lang);
   }
 
   @ApiBearerAuth()
@@ -106,5 +99,14 @@ export class UserController {
       model.token,
       (request as any).user,
     );
+  }
+
+  @Post(':lang')
+  @SetMetadata(METADATA.IS_PUBLIC, true)
+  createAccount(
+    @Body() createUserModel: CreateUserDto,
+    @Param('lang') lang: USER_LANGUAGE,
+  ): Promise<boolean> {
+    return this.userService.registerAccount(createUserModel, lang);
   }
 }

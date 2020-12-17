@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany } from 'typeorm';
+import { BaseEntity } from '../base.entity';
 import { Topic } from '../topic/topic.enum';
 
 @Entity()

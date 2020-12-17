@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
 import { GetRequest } from 'src/dto/GetRequest.dto';
@@ -22,10 +23,11 @@ import { TopicService } from './topic.service';
 import { Comment } from 'src/entities/comment/comment.entity';
 import { CreateComment } from 'src/dto/comment/createComment.dto';
 import { Request } from 'express';
+import { UserAuthenticationGuard } from 'src/common/guards/userAuthentication.guard';
 
-@ApiTags('Topic')
+@ApiTags('Topic - topic')
 @Controller('topic')
-// @UseGuards()
+@UseGuards(UserAuthenticationGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
@@ -36,6 +38,7 @@ export class TopicController {
     @Body() model: CreateTopicDto,
     @Req() request: Request,
   ): Promise<boolean> {
+    console.log(model);
     return this.topicService.createTopic(model, (request as any).user);
   }
 

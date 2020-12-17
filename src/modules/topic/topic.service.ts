@@ -26,19 +26,15 @@ export class TopicService {
     model: CreateTopicDto,
     user: Record<string, any>,
   ): Promise<boolean> {
-    try {
-      if (!user.id) {
-        customThrowError(RESPONSE_MESSAGES.INVALID, HttpStatus.FORBIDDEN);
-      }
-      const topic = new Topic();
-      topic.createdBy = user.id;
-      topic.subject = model.subject;
-      topic.description = model.description;
-      await this.topicRepository.save(topic);
-      return true;
-    } catch (e) {
-      customThrowError(RESPONSE_MESSAGES.ERROR, HttpStatus.BAD_REQUEST, e);
+    if (!user.id) {
+      customThrowError(RESPONSE_MESSAGES.INVALID, HttpStatus.FORBIDDEN);
     }
+    const topic = new Topic();
+    topic.createdBy = user.id;
+    topic.subject = model.subject;
+    topic.description = model.description;
+    await this.topicRepository.save(topic);
+    return true;
   }
 
   async editTopic(

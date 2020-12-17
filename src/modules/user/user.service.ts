@@ -104,7 +104,6 @@ export class UserService {
   }
 
   async login(model: LoginUserDto): Promise<BaseUserDetailResponse> {
-    console.log('user');
     const user = await this.userRepository.getLoginUserWithOptions({
       email: model.email,
     });
@@ -319,8 +318,7 @@ export class UserService {
     tokenData: Record<string, any>,
   ): Promise<boolean> {
     const { id } = tokenData;
-    let repository: Repository<User>;
-    const user = await repository.findOne(id, {
+    const user = await this.userRepository.findOne(id, {
       select: ['id', 'preferLanguage'],
     });
     if (!user) {
@@ -331,7 +329,7 @@ export class UserService {
       );
     }
     user.preferLanguage = language;
-    await repository.save(user);
+    await this.userRepository.save(user);
     return true;
   }
 }
