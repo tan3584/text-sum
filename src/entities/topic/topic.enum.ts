@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Generated,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { User } from '../user/user.entity';
 import { Comment } from '../comment/comment.entity';
@@ -47,4 +54,8 @@ export class Topic extends BaseEntity {
 
   @Column({ default: true })
   sendNoti: boolean;
+
+  @Column()
+  @Generated('uuid')
+  uuid: string;
 }

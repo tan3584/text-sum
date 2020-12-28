@@ -126,6 +126,7 @@ export class TopicService {
 
   async getNewTopics(model: GetRequest): Promise<[Topic[], number]> {
     const { search, skip, take } = model;
+    console.log(take);
     const order = {};
     if (model.orderBy) {
       order[model.orderBy] = model.orderDirection;
@@ -143,7 +144,14 @@ export class TopicService {
     }
 
     const options: FindManyOptions<Topic> = {
-      select: ['id', 'createdDate', 'updatedDate', 'subject', 'description'],
+      select: [
+        'id',
+        'createdDate',
+        'updatedDate',
+        'subject',
+        'description',
+        'uuid',
+      ],
       where,
       skip,
       take,
