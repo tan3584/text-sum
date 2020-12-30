@@ -12,6 +12,7 @@ import {
   Get,
   Query,
   UseGuards,
+  SetMetadata,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
 import { GetRequest } from 'src/dto/GetRequest.dto';
@@ -24,6 +25,7 @@ import { Comment } from 'src/entities/comment/comment.entity';
 import { CreateComment } from 'src/dto/comment/createComment.dto';
 import { Request } from 'express';
 import { UserAuthenticationGuard } from 'src/common/guards/userAuthentication.guard';
+import { METADATA } from 'src/common/constants/metadata/metadata.constant';
 
 @ApiTags('Topic - topic')
 @Controller('topic')
@@ -33,7 +35,7 @@ export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
   @Post()
-  //   @SetMetadata(METADATA.IS_PUBLIC, true)
+  @SetMetadata(METADATA.IS_PUBLIC, true)
   createTopic(
     @Body() model: CreateTopicDto,
     @Req() request: Request,

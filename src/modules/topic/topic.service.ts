@@ -22,7 +22,6 @@ export class TopicService {
     private readonly commentRepository: Repository<Comment>,
     private readonly userRepository: UserRepository,
     private readonly sumHelper: SumHelper,
-
   ) {}
 
   async createTopic(
@@ -36,17 +35,13 @@ export class TopicService {
     topic.createdBy = user.id;
     topic.subject = model.subject;
     topic.description = model.description;
+    console.log('wating for sumarization');
     const sum = await this.sumHelper.sumarization(topic.description);
-    console.log(sum);
-    // topic.sumarization = sum;
+    console.log(sum.data.summarization);
+    topic.sumarization = sum.data.summarization || '';
     await this.topicRepository.save(topic);
     return true;
   }
-
-  // private async _sumarization(data : string): Promise<Observable<AxiosResponse<any>>> {
-  //   const sumApi = process.env.TEXT_SUM_API;
-  //   return await this.httpService.post(`${sumApi}/sumarization`, data);
-  // }
 
   async editTopic(
     model: UpdateTopicDto,
@@ -161,6 +156,7 @@ export class TopicService {
         'updatedDate',
         'subject',
         'description',
+        'sumarization',
         'uuid',
       ],
       where,
