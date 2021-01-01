@@ -76,6 +76,11 @@ export class TopicController {
     return this.topicService.getNewTopics(model);
   }
 
+  @Get('filter')
+  getFilteredTopics(@Query() model: GetRequest): Promise<[Topic[], number]> {
+    return this.topicService.getFilteredTopics(model);
+  }
+
   @Get('comments')
   getTopicComments(@Query() model: GetRequest): Promise<[Comment[], number]> {
     return this.topicService.getTopicComments(model);

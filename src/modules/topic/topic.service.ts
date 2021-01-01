@@ -126,7 +126,6 @@ export class TopicService {
 
   async getNewTopics(model: GetRequest): Promise<[Topic[], number]> {
     const { search, skip, take } = model;
-    console.log(take);
     const order = {};
     if (model.orderBy) {
       order[model.orderBy] = model.orderDirection;
@@ -164,6 +163,52 @@ export class TopicService {
     }
 
     return [topics, count];
+  }
+
+  async getFilteredTopics(model: GetRequest): Promise<[Topic[], number]> {
+    const { search, skip, take, searchKeyword } = model;
+    console.log(searchKeyword);
+    // const order = {};
+    // if (model.orderBy) {
+    //   order[model.orderBy] = model.orderDirection;
+    // } else {
+    //   (order as any).id = 'DESC';
+    // }
+    // let where = [];
+
+    // const rawWhere = Raw(
+    //   alias => `LOWER(${alias}) like '%${searchKeyword.toLowerCase()}%'`,
+    // );
+
+    // if (search) {
+    //   where = [{ subject: rawWhere }, { description: rawWhere }];
+    // }
+
+    // const options: FindManyOptions<Topic> = {
+    //   select: [
+    //     'id',
+    //     'createdDate',
+    //     'updatedDate',
+    //     'subject',
+    //     'description',
+    //     'uuid',
+    //   ],
+    //   where,
+    //   skip,
+    //   take,
+    //   order,
+    //   relations: ['user'],
+    // };
+    // const [topics, count] = await this.topicRepository.findAndCount(options);
+    // if (!topics) {
+    //   return [[], 0];
+    // }
+    return await this.topicRepository.getFiltered({
+      take,
+      skip,
+      search: searchKeyword,
+    });
+    // return [topics, count];
   }
 
   async getTopicComments(model: GetRequest): Promise<[Comment[], number]> {
