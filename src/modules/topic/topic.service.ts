@@ -70,8 +70,9 @@ export class TopicService {
     return true;
   }
 
-  async getTopicById(topicId: number): Promise<TopicResponse> {
-    const topic = await this.topicRepository.findOne(topicId);
+  async getTopicById(topicId: string): Promise<TopicResponse> {
+    console.log(topicId);
+    const topic = await this.topicRepository.findOne({ uuid: topicId });
     if (!topic) {
       customThrowError(RESPONSE_MESSAGES.TOPIC_NOT_FOUND, HttpStatus.NOT_FOUND);
     }

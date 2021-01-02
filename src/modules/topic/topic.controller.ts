@@ -58,11 +58,6 @@ export class TopicController {
     return this.topicService.deleteTopic(id, (request as any).user);
   }
 
-  @Get('id')
-  getTopicById(@Param('id', ParseIntPipe) id: number): Promise<TopicResponse> {
-    return this.topicService.getTopicById(id);
-  }
-
   @Get('user')
   getTopicByUserId(
     @Req() request: Request,
@@ -118,5 +113,11 @@ export class TopicController {
     @Req() request: Request,
   ): Promise<boolean> {
     return this.topicService.removeLikedUser(id, (request as any).user);
+  }
+
+  @Get(':id')
+  getTopicById(@Param('id') id: string): Promise<TopicResponse> {
+    console.log('hoplla');
+    return this.topicService.getTopicById(id);
   }
 }
