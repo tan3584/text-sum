@@ -38,7 +38,6 @@ export class TopicController {
     @Body() model: CreateTopicDto,
     @Req() request: Request,
   ): Promise<boolean> {
-    console.log(model);
     return this.topicService.createTopic(model, (request as any).user);
   }
 

@@ -19,6 +19,9 @@ export class Topic extends BaseEntity {
   @Column({ nullable: false })
   description: string;
 
+  @Column({ nullable: true })
+  sumarization: string;
+
   @ManyToOne(
     () => User,
     user => user.topics,

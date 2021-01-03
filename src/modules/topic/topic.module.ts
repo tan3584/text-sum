@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, HttpService, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailHelper } from 'src/common/helpers/mail.helper';
 import { PasswordHelper } from 'src/common/helpers/password.helper';
+import { SumHelper } from 'src/common/helpers/sumarization.helper';
 import { TokenHelper } from 'src/common/helpers/token.helper';
 import { TemplatesService } from 'src/common/modules/email-template/template.service';
 import { LanguageService } from 'src/common/modules/languagues/language.service';
@@ -22,6 +23,7 @@ import { TopicService } from './topic.service';
       NotificationInstance,
       Comment,
     ]),
+    HttpModule
   ],
   controllers: [TopicController],
   providers: [
@@ -33,6 +35,7 @@ import { TopicService } from './topic.service';
     UserRepository,
     PasswordHelper,
     TopicService,
+    SumHelper,
   ],
 })
 export class TopicModule {}

@@ -5,6 +5,7 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import * as mimeTypes from 'mime-types';
 import { Request } from 'express';
+import { HttpService, Injectable } from '@nestjs/common';
 
 export const getValuesFromConstantObject = (
   obj: Record<string, unknown>,

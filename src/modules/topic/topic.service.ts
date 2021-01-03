@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpService, HttpStatus, Injectable } from '@nestjs/common';
 import { RESPONSE_MESSAGES } from 'src/common/constants/response-messages.enum';
 import { customThrowError } from 'src/common/helpers/throw.helper';
 import { GetRequest } from 'src/dto/GetRequest.dto';
@@ -12,6 +12,7 @@ import { Comment } from 'src/entities/comment/comment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateComment } from 'src/dto/comment/createComment.dto';
 import { UserRepository } from '../user/user.repository';
+import { SumHelper } from 'src/common/helpers/sumarization.helper';
 
 @Injectable()
 export class TopicService {
@@ -20,6 +21,8 @@ export class TopicService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
     private readonly userRepository: UserRepository,
+    private readonly sumHelper: SumHelper,
+
   ) {}
 
   async createTopic(
@@ -33,9 +36,16 @@ export class TopicService {
     topic.createdBy = user.id;
     topic.subject = model.subject;
     topic.description = model.description;
+    const sum = await this.sumHelper.sumarization(topic.description);
+    console.log(sum);
     await this.topicRepository.save(topic);
     return true;
   }
+
+  // private async _sumarization(data : string): Promise<Observable<AxiosResponse<any>>> {
+  //   const sumApi = process.env.TEXT_SUM_API;
+  //   return await this.httpService.post(`${sumApi}/sumarization`, data);
+  // }
 
   async editTopic(
     model: UpdateTopicDto,

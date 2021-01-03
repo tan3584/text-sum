@@ -21,6 +21,7 @@ export class UserAuthenticationGuard implements CanActivate {
     );
 
     if (isPublic) {
+      console.log('public');
       return true;
     }
     const request = this._getRequest(context);
