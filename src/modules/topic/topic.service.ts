@@ -38,6 +38,7 @@ export class TopicService {
     topic.description = model.description;
     const sum = await this.sumHelper.sumarization(topic.description);
     console.log(sum);
+    // topic.sumarization = sum;
     await this.topicRepository.save(topic);
     return true;
   }
